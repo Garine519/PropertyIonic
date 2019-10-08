@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="logout()">
+        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>My Properties</ion-title>
+  </ion-toolbar>
+</ion-header>
+ 
+<ion-content padding>
+    <ion-card *ngFor="let property of properties">
+        <ion-card-header>
+          <ion-card-subtitle>{{property.address}}</ion-card-subtitle>
+          <ion-card-title>{{property.name}}</ion-card-title>
+        </ion-card-header>
+    
+      </ion-card>
+</ion-content>
