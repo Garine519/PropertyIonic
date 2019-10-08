@@ -1,27 +1,44 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { inject, TestBed, async } from '@angular/core/testing';
+import { PropertiesService } from './properties.service';
+import { IonicStorageModule } from '@ionic/storage';
 
-import { PropertiesPage } from './properties.page';
+describe('PropertyService', () => {
 
-describe('PropertiesPage', () => {
-  let component: PropertiesPage;
-  let fixture: ComponentFixture<PropertiesPage>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ PropertiesPage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
+  let httpMock: HttpTestingController;
+  let propertyService: PropertiesService;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PropertiesPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule, IonicStorageModule.forRoot()
+      ],
+      providers: [
+        PropertiesService
+      ]
+    });
+
+    propertyService = TestBed.get(PropertiesService);
+    httpMock = TestBed.get(HttpTestingController);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should be created', inject([PropertiesService], (service: PropertiesService) => {
+    expect(service).toBeTruthy();
+  }));
+
+  it('should call http post with correct path when listing properties', () => {
+    propertyService.getProperties({}, { limit: 10, offset: 0 })
+      .then((resp) => {
+
+        const req = httpMock.expectOne((request) => {
+          return request.method === 'POST' &&
+            JSON.stringify(request.body) === '{}' &&
+            request.url === 'http://localhost:3000/api/properties';
+        });
+        req.flush([]);
+    
+      });
+
+    httpMock.verify();
   });
 });

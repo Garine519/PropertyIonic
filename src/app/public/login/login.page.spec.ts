@@ -2,6 +2,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginPage } from './login.page';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { IonicStorageModule } from '@ionic/storage';
 
 describe('LoginPage', () => {
   let component: LoginPage;
@@ -11,6 +14,8 @@ describe('LoginPage', () => {
     TestBed.configureTestingModule({
       declarations: [ LoginPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [HttpClientTestingModule, IonicStorageModule.forRoot()],
+      providers: [AuthenticationService]
     })
     .compileComponents();
   }));
@@ -24,4 +29,9 @@ describe('LoginPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('shoud Login', () => {
+    const service: AuthenticationService = TestBed.get(AuthenticationService);
+    service.login('test@test.com', 'testtest');
+  })
 });

@@ -35,18 +35,16 @@ export class PropertiesService {
     private http: HttpClient, private authService: AuthenticationService
   ) { }
 
-  public getProperties(query: any = {}, params: { limit: number; offset: number } = { limit: 100, offset: 0 }): Promise<Property[]> {
-    return this.authService.getToken().then((user: any) => {
-      return this.http.post<Property[]>(PROPERTIES_PATH, query, {
-        headers: new HttpHeaders().set('Authorization', 'Bearer ' + user.token),
-        params: {
-          limit: `${params.limit}`,
-          offset: `${params.offset}`
-        }
-      }).toPromise();
-    });
-    
-    
+  public async getProperties(query: any = {}, params: { limit: number; offset: number } = { limit: 100, offset: 0 }): Promise<Property[]> {
+    const user = await this.authService.getUser();
+    const token = user.token ? user.token : '';
+    return this.http.post<Property[]>(PROPERTIES_PATH, query, {
+      headers: new HttpHeaders().set('Authorization', 'Bearer ' + token),
+      params: {
+        limit: `${params.limit}`,
+        offset: `${params.offset}`
+      }
+    }).toPromise();
   }
 
   public addProperty(property: Property) {
@@ -69,7 +67,7 @@ export class PropertiesService {
     const user = JSON.parse(localStorage.getItem('user'));
     const token = user ? user.token : '';
     const unitPath = ADD_UNIT_PATH.replace(':id', property_id);
-    return this.http.post<Property>(unitPath, {property_id: property_id, unit: unit}, {
+    return this.http.post<Property>(unitPath, { property_id: property_id, unit: unit }, {
       headers: new HttpHeaders().set('Authorization', 'Bearer ' + token),
     });
   }

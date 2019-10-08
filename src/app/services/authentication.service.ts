@@ -15,10 +15,8 @@ export class AuthenticationService {
 
   authenticationState = new BehaviorSubject(false);
 
-  constructor(private storage: Storage, private plt: Platform, private http: HttpClient) {
-    this.plt.ready().then(() => {
-      this.checkToken();
-    });
+  constructor(private storage: Storage, private http: HttpClient) {
+    this.checkToken();
   }
 
   checkToken() {
@@ -29,12 +27,14 @@ export class AuthenticationService {
     })
   }
 
-  getToken(): Promise<any> {
-    return this.storage.get(USER_KEY).then(user => {
-      if (user) {
-        return JSON.parse(user);
-      }
-    })
+  async getUser(): Promise<any> {
+    const user = await this.storage.get(USER_KEY);
+    if (user) {
+      return JSON.parse(user);
+    }
+    else {
+      return {};
+    }
   }
 
   login(email: string, password: string) {
