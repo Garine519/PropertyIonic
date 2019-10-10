@@ -1,5 +1,7 @@
 {
   "name": "devdacticLogin",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
